@@ -7,6 +7,8 @@
 
 (function (undefined) {
 
+// jshint ignore:start
+
 var today, moment;
 
 var Kalendae = function (targetElement, options) {
@@ -163,84 +165,98 @@ var Kalendae = function (targetElement, options) {
 
 	self.draw();
 
-	util.addEvent($container, 'mousedown', function (event, target) {
-		var clickedDate;
-		if (util.hasClassName(target, classes.nextMonth)) {
-		//NEXT MONTH BUTTON
-			if (!self.disableNext && self.publish('view-changed', self, ['next-month']) !== false) {
-				self.viewStartDate.add(1, 'months');
-				self.draw();
-			}
-			return false;
+  this.mousedownHandler = function (event, target) {
+    var clickedDate;
+    if (util.hasClassName(target, classes.nextMonth)) {
+    //NEXT MONTH BUTTON
+      if (!self.disableNext && self.publish('view-changed', self, ['next-month']) !== false) {
+        self.viewStartDate.add(1, 'months');
+        self.draw();
+      }
+      return false;
 
-		} else if (util.hasClassName(target, classes.previousMonth)) {
-		//PREVIOUS MONTH BUTTON
-			if (!self.disablePreviousMonth && self.publish('view-changed', self, ['previous-month']) !== false) {
-				self.viewStartDate.subtract('months',1);
-				self.draw();
-			}
-			return false;
+    } else if (util.hasClassName(target, classes.previousMonth)) {
+    //PREVIOUS MONTH BUTTON
+      if (!self.disablePreviousMonth && self.publish('view-changed', self, ['previous-month']) !== false) {
+        self.viewStartDate.subtract('months',1);
+        self.draw();
+      }
+      return false;
 
-		} else if (util.hasClassName(target, classes.nextYear)) {
-		//NEXT MONTH BUTTON
-			if (!self.disableNext && self.publish('view-changed', self, ['next-year']) !== false) {
-				self.viewStartDate.add(1, 'years');
-				self.draw();
-			}
-			return false;
+    } else if (util.hasClassName(target, classes.nextYear)) {
+    //NEXT MONTH BUTTON
+      if (!self.disableNext && self.publish('view-changed', self, ['next-year']) !== false) {
+        self.viewStartDate.add(1, 'years');
+        self.draw();
+      }
+      return false;
 
-		} else if (util.hasClassName(target, classes.previousYear)) {
-		//PREVIOUS MONTH BUTTON
-			if (!self.disablePreviousMonth && self.publish('view-changed', self, ['previous-year']) !== false) {
-				self.viewStartDate.subtract('years',1);
-				self.draw();
-			}
-			return false;
+    } else if (util.hasClassName(target, classes.previousYear)) {
+    //PREVIOUS MONTH BUTTON
+      if (!self.disablePreviousMonth && self.publish('view-changed', self, ['previous-year']) !== false) {
+        self.viewStartDate.subtract('years',1);
+        self.draw();
+      }
+      return false;
 
-		} else if ( (util.hasClassName(target.parentNode, classes.days) || util.hasClassName(target.parentNode, classes.week)) && util.hasClassName(target, classes.dayActive) && (clickedDate = target.getAttribute('data-date'))) {
-		//DAY CLICK
-			clickedDate = moment(clickedDate, opts.dayAttributeFormat).hours(12);
-			if (self.publish('date-clicked', self, [clickedDate]) !== false) {
+    } else if ( (util.hasClassName(target.parentNode, classes.days) || util.hasClassName(target.parentNode, classes.week)) && util.hasClassName(target, classes.dayActive) && (clickedDate = target.getAttribute('data-date'))) {
+    //DAY CLICK
+      clickedDate = moment(clickedDate, opts.dayAttributeFormat).hours(12);
+      if (self.publish('date-clicked', self, [clickedDate]) !== false) {
 
-				switch (opts.mode) {
-					case 'multiple':
-						if (!self.addSelected(clickedDate)) self.removeSelected(clickedDate);
-						break;
-					case 'range':
-						self.addSelected(clickedDate);
-						break;
-					case 'week':
-						self.weekSelected(clickedDate);
-						break;
-					case 'single':
-						/* falls through */
-					default:
-						self.addSelected(clickedDate);
-						break;
-				}
+        switch (opts.mode) {
+          case 'multiple':
+            if (!self.addSelected(clickedDate)) self.removeSelected(clickedDate);
+            break;
+          case 'range':
+            self.addSelected(clickedDate);
+            break;
+          case 'week':
+            self.weekSelected(clickedDate);
+            break;
+          case 'single':
+            /* falls through */
+          default:
+            self.addSelected(clickedDate);
+            break;
+        }
 
-			}
-			return false;
+      }
+      return false;
 
-		} else if ( util.hasClassName(target.parentNode, classes.week) && (clickedDate = target.getAttribute('data-date') ) ) {
-		//INACTIVE WEEK CLICK
-			clickedDate = moment(clickedDate, opts.dayAttributeFormat).hours(12);
-			if (self.publish('date-clicked', self, [clickedDate]) !== false) {
-				if (opts.mode == 'week') {
-					self.weekSelected(clickedDate);
-				}
-			}
-			return false;
-		}
+    } else if ( util.hasClassName(target.parentNode, classes.week) && (clickedDate = target.getAttribute('data-date') ) ) {
+    //INACTIVE WEEK CLICK
+      clickedDate = moment(clickedDate, opts.dayAttributeFormat).hours(12);
+      if (self.publish('date-clicked', self, [clickedDate]) !== false) {
+        if (opts.mode == 'week') {
+          self.weekSelected(clickedDate);
+        }
+      }
+      return false;
+    }
 
-		return false;
-	});
+    return false;
+  };
 
+	util.addEvent($container, 'mousedown', this.mousedownHandler);
 
 	if (!!(opts.attachTo = util.$(opts.attachTo))) {
 		opts.attachTo.appendChild($container);
 	}
 
+  this.destroy = function() {
+    util.removeEvent($container, 'mousedown', this.mousedownHandler);
+    $container.parentNode.removeChild($container);
+    $container = null;
+    $cal = null;
+    $title = null;
+    $caption = null;
+    $header = null;
+    $days = null;
+    $week = null;
+    $span = null;
+    dayNodes = null;
+  }
 };
 
 Kalendae.prototype = {
