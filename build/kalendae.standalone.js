@@ -236,8 +236,11 @@ var Kalendae = function (targetElement, options) {
 		return false;
 	};
 
-	util.addEvent($container, 'mousedown', handleClickedContainer);
-	util.addEvent($container, 'touchstart', handleClickedContainer);
+	if ('ontouchstart' in document.documentElement) {
+		util.addEvent($container, 'touchstart', handleClickedContainer);
+	} else {
+		util.addEvent($container, 'mousedown', handleClickedContainer);
+	}
 
 	if (!!(opts.attachTo = util.$(opts.attachTo))) {
 		opts.attachTo.appendChild($container);
@@ -871,7 +874,11 @@ Kalendae.Input = function (targetElement, options) {
 	$container.style.display = 'none';
 	util.addClassName($container, classes.positioned);
 
-	this._events.containerMouseDown = util.addEvent($container, 'mousedown', function (event, target) {
+	this._events.containerMousedown = util.addEvent($container, 'mousedown', function (event, target) {
+		noclose = true; //IE8 doesn't obey event blocking when it comes to focusing, so we have to do this shit.
+	});
+
+	this._events.containerTouchstart = util.addEvent($container, 'touchstart', function (event, target) {
 		noclose = true; //IE8 doesn't obey event blocking when it comes to focusing, so we have to do this shit.
 	});
 
@@ -994,6 +1001,8 @@ Kalendae.Input.prototype = util.merge(Kalendae.prototype, {
 		var $input = this.input;
 
 		util.removeEvent($container, 'mousedown', this._events.containerMousedown);
+
+		util.removeEvent($container, 'touchstart', this._events.containerTouchstart);
 
 		util.removeEvent(window.document, 'mousedown', this._events.documentMousedown);
 
