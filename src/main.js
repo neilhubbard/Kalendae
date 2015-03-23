@@ -227,8 +227,11 @@ var Kalendae = function (targetElement, options) {
 		return false;
 	};
 
-	util.addEvent($container, 'mousedown', handleClickedContainer);
-	util.addEvent($container, 'touchstart', handleClickedContainer);
+	if ('ontouchstart' in document.documentElement) {
+		util.addEvent($container, 'touchstart', handleClickedContainer);
+	} else {
+		util.addEvent($container, 'mousedown', handleClickedContainer);
+	}
 
 	if (!!(opts.attachTo = util.$(opts.attachTo))) {
 		opts.attachTo.appendChild($container);
