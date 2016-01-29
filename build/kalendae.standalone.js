@@ -164,6 +164,7 @@ var Kalendae = function (targetElement, options) {
 	self.draw();
 
 	var handleClickedContainer = function(event, target) {
+		event.preventDefault();
 		var clickedDate;
 		if (util.hasClassName(target, classes.nextMonth)) {
 		//NEXT MONTH BUTTON
@@ -238,9 +239,9 @@ var Kalendae = function (targetElement, options) {
 
 	if ('ontouchstart' in document.documentElement) {
 		util.addEvent($container, 'touchstart', handleClickedContainer);
-	} else {
-		util.addEvent($container, 'mousedown', handleClickedContainer);
 	}
+
+	util.addEvent($container, 'mousedown', handleClickedContainer);
 
 	if (!!(opts.attachTo = util.$(opts.attachTo))) {
 		opts.attachTo.appendChild($container);
