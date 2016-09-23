@@ -163,7 +163,8 @@ var Kalendae = function (targetElement, options) {
 
 	self.draw();
 
-	util.addEvent($container, 'mousedown', function (event, target) {
+	var handleClickedContainer = function(event, target) {
+		event.preventDefault();
 		var clickedDate;
 		if (util.hasClassName(target, classes.nextMonth)) {
 		//NEXT MONTH BUTTON
@@ -176,13 +177,13 @@ var Kalendae = function (targetElement, options) {
 		} else if (util.hasClassName(target, classes.previousMonth)) {
 		//PREVIOUS MONTH BUTTON
 			if (!self.disablePreviousMonth && self.publish('view-changed', self, ['previous-month']) !== false) {
-				self.viewStartDate.subtract('months',1);
+				self.viewStartDate.subtract(1, 'months');
 				self.draw();
 			}
 			return false;
 
 		} else if (util.hasClassName(target, classes.nextYear)) {
-		//NEXT MONTH BUTTON
+		//NEXT YEAR BUTTON
 			if (!self.disableNext && self.publish('view-changed', self, ['next-year']) !== false) {
 				self.viewStartDate.add(1, 'years');
 				self.draw();
@@ -190,7 +191,7 @@ var Kalendae = function (targetElement, options) {
 			return false;
 
 		} else if (util.hasClassName(target, classes.previousYear)) {
-		//PREVIOUS MONTH BUTTON
+		//PREVIOUS YEAR BUTTON
 			if (!self.disablePreviousMonth && self.publish('view-changed', self, ['previous-year']) !== false) {
 				self.viewStartDate.subtract('years',1);
 				self.draw();
@@ -234,8 +235,13 @@ var Kalendae = function (targetElement, options) {
 		}
 
 		return false;
-	});
+	};
 
+	if ('ontouchstart' in document.documentElement) {
+		util.addEvent($container, 'touchstart', handleClickedContainer);
+	}
+
+	util.addEvent($container, 'mousedown', handleClickedContainer);
 
 	if (!!(opts.attachTo = util.$(opts.attachTo))) {
 		opts.attachTo.appendChild($container);
@@ -869,7 +875,11 @@ Kalendae.Input = function (targetElement, options) {
 	$container.style.display = 'none';
 	util.addClassName($container, classes.positioned);
 
-	this._events.containerMouseDown = util.addEvent($container, 'mousedown', function (event, target) {
+	this._events.containerMousedown = util.addEvent($container, 'mousedown', function (event, target) {
+		noclose = true; //IE8 doesn't obey event blocking when it comes to focusing, so we have to do this shit.
+	});
+
+	this._events.containerTouchstart = util.addEvent($container, 'touchstart', function (event, target) {
 		noclose = true; //IE8 doesn't obey event blocking when it comes to focusing, so we have to do this shit.
 	});
 
@@ -993,6 +1003,8 @@ Kalendae.Input.prototype = util.merge(Kalendae.prototype, {
 
 		util.removeEvent($container, 'mousedown', this._events.containerMousedown);
 
+		util.removeEvent($container, 'touchstart', this._events.containerTouchstart);
+
 		util.removeEvent(window.document, 'mousedown', this._events.documentMousedown);
 
 		util.removeEvent($input, 'focus', this._events.inputFocus);
@@ -1001,7 +1013,7 @@ Kalendae.Input.prototype = util.merge(Kalendae.prototype, {
 
 		util.removeEvent($input, 'keyup', this._events.inputKeyup);
 
-		$container.remove();
+		$container.parentElement.removeChild($container);
 	}
 });
 

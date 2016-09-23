@@ -40,7 +40,11 @@ Kalendae.Input = function (targetElement, options) {
 	$container.style.display = 'none';
 	util.addClassName($container, classes.positioned);
 
-	this._events.containerMouseDown = util.addEvent($container, 'mousedown', function (event, target) {
+	this._events.containerMousedown = util.addEvent($container, 'mousedown', function (event, target) {
+		noclose = true; //IE8 doesn't obey event blocking when it comes to focusing, so we have to do this shit.
+	});
+
+	this._events.containerTouchstart = util.addEvent($container, 'touchstart', function (event, target) {
 		noclose = true; //IE8 doesn't obey event blocking when it comes to focusing, so we have to do this shit.
 	});
 
@@ -164,6 +168,8 @@ Kalendae.Input.prototype = util.merge(Kalendae.prototype, {
 
 		util.removeEvent($container, 'mousedown', this._events.containerMousedown);
 
+		util.removeEvent($container, 'touchstart', this._events.containerTouchstart);
+
 		util.removeEvent(window.document, 'mousedown', this._events.documentMousedown);
 
 		util.removeEvent($input, 'focus', this._events.inputFocus);
@@ -172,7 +178,7 @@ Kalendae.Input.prototype = util.merge(Kalendae.prototype, {
 
 		util.removeEvent($input, 'keyup', this._events.inputKeyup);
 
-		$container.remove();
+		$container.parentElement.removeChild($container);
 	}
 });
 
