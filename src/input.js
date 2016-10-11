@@ -72,7 +72,7 @@ Kalendae.Input = function (targetElement, options) {
 		var dateValue = parseDates(this.value, self.settings.parseSplitDelimiter, self.settings.format);
 
 		// If the date in the field is parsable as a valid date, update.  Otherwise deselect and show default view.
-		if (dateValue && dateValue.length && dateValue[0] && dateValue[0].year > 1000) {
+		if (dateValue && dateValue.length && dateValue[0] && dateValue[0].year() > 1000) {
 			self.setSelected(this.value);
 		} else {
 			self.setSelected('', null);
@@ -99,6 +99,10 @@ Kalendae.Input = function (targetElement, options) {
 		}
 		$input.value = self.getSelected();
 		util.fireEvent($input, 'change');
+		if (opts.closeOnSelection && opts.mode === 'single') {
+			$input.blur();
+			self.hide();
+		}
 	});
 
 };
@@ -178,7 +182,9 @@ Kalendae.Input.prototype = util.merge(Kalendae.prototype, {
 
 		util.removeEvent($input, 'keyup', this._events.inputKeyup);
 
-		$container.parentElement.removeChild($container);
+		if ($container.parentNode) {
+			$container.parentNode.removeChild($container);
+		}
 	}
 });
 
