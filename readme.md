@@ -30,23 +30,23 @@ Two month, range selection, future dates only, with weekends blacked out:
 ##Usage
 
 Copy the contents of the `build/` folder into wherever your website scripts are kept.  Include the JS and CSS files in the head of your document like so:
-
-    <link rel="stylesheet" href="build/kalendae.css" type="text/css" charset="utf-8">
-    <script src="build/kalendae.standalone.js" type="text/javascript" charset="utf-8"></script>
-
+```html
+<link rel="stylesheet" href="build/kalendae.css" type="text/css" charset="utf-8">
+<script src="build/kalendae.standalone.js" type="text/javascript" charset="utf-8"></script>
+```
 Once this is done you can initialize kalendae a number of ways.  The easiest method is to simply add the "auto-kal" class onto the element you want to calendar attached to.  The calendar will be created using the default settings.
-
-    <div class="auto-kal"></div>
-
+```html
+<div class="auto-kal"></div>
+```
 This works for input elements as well, providing a popup calendar.
-
-    <input type="text" class="auto-kal">
-
+```html
+<input type="text" class="auto-kal">
+```
 
 If you want to override the default settings, you can use the data-kal attribute.
-
-    <div class="auto-kal" data-kal="months: 3, direction: 'future'"></div>
-
+```html
+<div class="auto-kal" data-kal="months: 3, direction: 'future'"></div>
+```
 Again, this will work for input elements as well.
 
 You can also setup Kalendae manually via JavaScript code. This should be done either at the end of the page, or in the DOMReady/Load event. To do this you must instantiate one of two objects, the widget class `Kalendae`, or the input element popup class `Kalendae.Input`.  Both objects take two arguments:
@@ -63,11 +63,11 @@ Kalendae does not require jQuery, but does provide a jQuery plugin when jQuery i
 ##moment.js
 
 To ease date handling processes, Kalendae bundles the [moment.js](http://www.momentjs.com) date handling library.  This bundled library has been altered to prevent it from being added to the global context, but is still available if you wish to use it in your own code.  Add the following directly after the `<script>` tag to make moment available for your application.
-
-    <script type="text/javascript" charset="utf-8">
-        window.moment = Kalendae.moment;
-    </script>
-
+```html
+<script type="text/javascript" charset="utf-8">
+    window.moment = Kalendae.moment;
+</script>
+```
 ##Options
 
 The following options are available for configuration.
@@ -91,6 +91,10 @@ The following options are available for configuration.
     - Values my be a string, JavaScript Date object, Moment object, or an array containing any of the three.
     - In "multiple" mode, strings may contain multiple dates separated by commas. *ex: 2/3/2012, 3/15/2012, 4/2/2012*
     - In "range" mode, strings may contain two dates separated by a hyphen. *ex: 2/3/2012 - 3/15/2012*
+
+- `closeOnSelection`: Close the calendar popup when a date is selected.
+    - Only works in `Kalendae.Input` and in `single` mode.
+    - Default is `false`.
 
 - `months`:	The total number of months to display side by side on the calendar.
     - Default is `1`.
@@ -121,6 +125,8 @@ The following options are available for configuration.
     - Default is `null`.
 
 - `dayOutOfMonthClickable`: Allow clicks on days that fall outside of the currently focused month. Default is `false`.
+
+- `dayHeaderClickable`: Allow click on header days to select all instances of the selected day name. It only works in "multiple" mode.  Default is `false`.
 
 - `useYearNav`: Include the double-arrow year navigation. Default is `true`.
 
@@ -193,22 +199,22 @@ The following properties are exposed on the instantiated `Kalendae` and `Kalenda
 ##Kalendae Events
 
 Kalendae uses a publish/subscribe event system.  To receive events from a Kalendae instance you can call the `subscribe()` function on the Kalendae instance, passing the event name and a callback function.  Example:
-
-    var k = new Kalendae('myDiv');
-    k.subscribe('change', function (date) {
-       console.log(date, this.getSelected());
-    });
-
+```js
+var k = new Kalendae('myDiv');
+k.subscribe('change', function (date) {
+   console.log(date, this.getSelected());
+});
+```
 Callbacks can also be passed in the options object:
-
-    new Kalendae('myDiv', {
-       subscribe: {
-           'change': function (date) {
-               console.log(date, this.getSelected());
-           }
+```js
+new Kalendae('myDiv', {
+   subscribe: {
+       'change': function (date) {
+           console.log(date, this.getSelected());
        }
-    });
-
+   }
+});
+```
 Kalendae offers the following events:
 
 - `change` - Fires whenever the selected date changes, either from a user clicking or a call to `setSelected()`. Receives the last clicked on date as the only argument, and the Kalendae instance as `this`.
@@ -248,4 +254,3 @@ To create a minified version, run `make minified`.  If the minified file is blan
 ##License
 
 Kalendae is released under an MIT license and is freely distributable.
-
