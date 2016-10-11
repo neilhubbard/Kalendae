@@ -21,8 +21,6 @@ var getTodayYearDate = function() {
 	return Kalendae.moment().startOf('day').yearDay();
 };
 
-var today, moment, getTodayYearDate;
-
 var Kalendae = function (targetElement, options) {
 	if (typeof document.addEventListener !== 'function' && !util.isIE8()) return;
 
@@ -70,13 +68,13 @@ var Kalendae = function (targetElement, options) {
 		}
 	}
 
-	//set the view month
-	if (!!opts.viewStartDate) {
-		vsd = moment(opts.viewStartDate, opts.format);
-	} else {
-		vsd = moment();
-	}
-	self.viewStartDate = vsd.date(1);
+    //set the view month
+    if (!!opts.viewStartDate) {
+        vsd = moment(opts.viewStartDate, opts.format);
+    } else {
+        vsd = moment();
+    }
+    self.viewStartDate = vsd.date(1);
 
     //process default selected dates
     self._sel = [];
@@ -214,7 +212,7 @@ var Kalendae = function (targetElement, options) {
 		} else if (util.hasClassName(target, classes.previousMonth)) {
 		//PREVIOUS MONTH BUTTON
 			if (!self.disablePreviousMonth && self.publish('view-changed', self, ['previous-month']) !== false) {
-				self.viewStartDate.subtract(1, 'months');
+				self.viewStartDate.subtract(1,'months');
 				self.draw();
 			}
 			return false;
@@ -280,7 +278,7 @@ var Kalendae = function (targetElement, options) {
 					self.monthDaySelected(month, dayToSelect, true);
 				} else {
 					self.monthDaySelected(month, dayToSelect, false);
-		}
+				}
 			}
 			return false;
 		}
@@ -1052,6 +1050,10 @@ Kalendae.Input = function (targetElement, options) {
 		}
 		$input.value = self.getSelected();
 		util.fireEvent($input, 'change');
+		if (opts.closeOnSelection && opts.mode === 'single') {
+			$input.blur();
+			self.hide();
+		}
 	});
 
 };
@@ -1244,12 +1246,6 @@ moment.fn.yearDay = function (input) {
     return (typeof input === 'undefined') ? yearday :
         this.add({ d : input - yearday });
 };
-
-getTodayYearDate = function() {
-  return Kalendae.moment().startOf('day').yearDay();
-};
-
-today = Kalendae.moment().startOf('day');
 if (typeof jQuery !== 'undefined' && (typeof document.addEventListener === 'function' || util.isIE8())) {
 	jQuery.fn.kalendae = function (options) {
 		this.each(function (i, e) {

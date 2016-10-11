@@ -71,13 +71,13 @@ var Kalendae = function (targetElement, options) {
 		}
 	}
 
-	//set the view month
-	if (!!opts.viewStartDate) {
-		vsd = moment(opts.viewStartDate, opts.format);
-	} else {
-		vsd = moment();
-	}
-	self.viewStartDate = vsd.date(1);
+    //set the view month
+    if (!!opts.viewStartDate) {
+        vsd = moment(opts.viewStartDate, opts.format);
+    } else {
+        vsd = moment();
+    }
+    self.viewStartDate = vsd.date(1);
 
     //process default selected dates
     self._sel = [];
@@ -215,7 +215,7 @@ var Kalendae = function (targetElement, options) {
 		} else if (util.hasClassName(target, classes.previousMonth)) {
 		//PREVIOUS MONTH BUTTON
 			if (!self.disablePreviousMonth && self.publish('view-changed', self, ['previous-month']) !== false) {
-				self.viewStartDate.subtract(1, 'months');
+				self.viewStartDate.subtract(1,'months');
 				self.draw();
 			}
 			return false;
@@ -281,7 +281,7 @@ var Kalendae = function (targetElement, options) {
 					self.monthDaySelected(month, dayToSelect, true);
 				} else {
 					self.monthDaySelected(month, dayToSelect, false);
-		}
+				}
 			}
 			return false;
 		}
@@ -1654,7 +1654,7 @@ var MinPubSub = function(d){
     function Moment(config, skipOverflow) {
         if (skipOverflow !== false) {
             checkOverflow(config);
-    }
+        }
         copyConfig(this, config);
         this._d = new Date(+config._d);
         // Prevent infinite loop in case updateOffset creates new moment
@@ -1855,7 +1855,7 @@ var MinPubSub = function(d){
         if (updateOffset) {
             moment.updateOffset(mom, days || months);
         }
-        }
+    }
 
     // check if is an array
     function isArray(input) {
@@ -1886,7 +1886,7 @@ var MinPubSub = function(d){
         if (units) {
             var lowered = units.toLowerCase().replace(/(.)s$/, '$1');
             units = unitAliases[units] || camelFunctions[lowered] || lowered;
-    }
+        }
         return units;
     }
 
@@ -2358,7 +2358,7 @@ var MinPubSub = function(d){
         }
 
         return format;
-        }
+    }
 
 
     /************************************
@@ -2581,7 +2581,7 @@ var MinPubSub = function(d){
                 config._w['d'] = a;
             } else {
                 config._pf.invalidWeekday = input;
-        }
+            }
             break;
         // WEEK, WEEK DAY - numeric
         case 'w':
@@ -2636,14 +2636,14 @@ var MinPubSub = function(d){
                 weekday = w.d;
                 if (weekday < dow) {
                     ++week;
-        }
+                }
             } else if (w.e != null) {
                 // local weekday -- counting starts from begining of week
                 weekday = w.e + dow;
             } else {
                 // default to begining of week
                 weekday = dow;
-    }
+            }
         }
         temp = dayOfYearFromWeeks(weekYear, week, weekday, doy, dow);
 
@@ -2784,10 +2784,10 @@ var MinPubSub = function(d){
             if (formatTokenFunctions[token]) {
                 if (parsedInput) {
                     config._pf.empty = false;
-            }
+                }
                 else {
                     config._pf.unusedTokens.push(token);
-        }
+                }
                 addTimeToArrayFromToken(token, parsedInput, config);
             }
             else if (config._strict && !parsedInput) {
@@ -2810,7 +2810,7 @@ var MinPubSub = function(d){
                 config._meridiem);
         dateFromConfig(config);
         checkOverflow(config);
-        }
+    }
 
     function unescapeFormat(s) {
         return s.replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
@@ -3097,7 +3097,7 @@ var MinPubSub = function(d){
             // Adding is smart enough around DST
             res.add(1, 'd');
             res._nextDay = undefined;
-    }
+        }
 
         return res;
     }
@@ -3313,10 +3313,10 @@ var MinPubSub = function(d){
         if (key) {
             if (typeof(values) !== 'undefined') {
                 data = moment.defineLocale(key, values);
-        }
+            }
             else {
                 data = moment.localeData(key);
-        }
+            }
 
             if (data) {
                 moment.duration._locale = moment._locale = data;
@@ -3331,7 +3331,7 @@ var MinPubSub = function(d){
             values.abbr = name;
             if (!locales[name]) {
                 locales[name] = new Locale();
-        }
+            }
             locales[name].set(values);
 
             // backwards compat for now: also set the locale
@@ -3476,9 +3476,9 @@ var MinPubSub = function(d){
         },
 
         isDSTShifted : function () {
-                if (this._a) {
+            if (this._a) {
                 return this.isValid() && compareArrays(this._a, (this._isUTC ? moment.utc(this._a) : moment(this._a)).toArray()) > 0;
-                }
+            }
 
             return false;
         },
@@ -3502,7 +3502,7 @@ var MinPubSub = function(d){
 
                 if (keepLocalTime) {
                     this.subtract(this._dateUtcOffset(), 'm');
-            }
+                }
             }
             return this;
         },
@@ -3558,11 +3558,11 @@ var MinPubSub = function(d){
                 sod = makeAs(now, this).startOf('day'),
                 diff = this.diff(sod, 'days', true),
                 format = diff < -6 ? 'sameElse' :
-                diff < -1 ? 'lastWeek' :
-                diff < 0 ? 'lastDay' :
-                diff < 1 ? 'sameDay' :
-                diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' : 'sameElse';
+                    diff < -1 ? 'lastWeek' :
+                    diff < 0 ? 'lastDay' :
+                    diff < 1 ? 'sameDay' :
+                    diff < 2 ? 'nextDay' :
+                    diff < 7 ? 'nextWeek' : 'sameElse';
             return this.format(this.localeData().calendar(format, this, moment(now)));
         },
 
@@ -3587,7 +3587,7 @@ var MinPubSub = function(d){
 
         month : makeAccessor('Month', true),
 
-        startOf: function (units) {
+        startOf : function (units) {
             units = normalizeUnits(units);
             // the following switch intentionally omits break keywords
             // to utilize falling through the cases.
@@ -3681,16 +3681,16 @@ var MinPubSub = function(d){
         min: deprecate(
                  'moment().min is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548',
                  function (other) {
-            other = moment.apply(null, arguments);
-            return other < this ? this : other;
+                     other = moment.apply(null, arguments);
+                     return other < this ? this : other;
                  }
          ),
 
         max: deprecate(
                 'moment().max is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548',
                 function (other) {
-            other = moment.apply(null, arguments);
-            return other > this ? this : other;
+                    other = moment.apply(null, arguments);
+                    return other > this ? this : other;
                 }
         ),
 
@@ -3698,10 +3698,10 @@ var MinPubSub = function(d){
                 'moment().zone is deprecated, use moment().utcOffset instead. ' +
                 'https://github.com/moment/moment/issues/1779',
                 function (input, keepLocalTime) {
-            if (input != null) {
+                    if (input != null) {
                         if (typeof input !== 'string') {
                             input = -input;
-                }
+                        }
 
                         this.utcOffset(input, keepLocalTime);
 
@@ -3748,7 +3748,7 @@ var MinPubSub = function(d){
                         this._changeInProgress = true;
                         moment.updateOffset(this, true);
                         this._changeInProgress = null;
-                }
+                    }
                 }
 
                 return this;
@@ -3896,7 +3896,7 @@ var MinPubSub = function(d){
                     return this.localeData();
                 } else {
                     return this.locale(key);
-        }
+                }
             }
         ),
 
@@ -4242,7 +4242,7 @@ var MinPubSub = function(d){
 }).call(Kalendae);
 if (typeof moment !== 'undefined') {
 	Kalendae.moment = moment;
-    }
+}
 
 if (!Kalendae.moment) {
 	if (window.moment) {
