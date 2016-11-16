@@ -960,6 +960,8 @@ Kalendae.Input = function (targetElement, options) {
 		$closeButton,
 		changing = false;
 
+	var $inputParent = $input.parentElement;
+
 	if (!$input || $input.tagName !== 'INPUT') throw "First argument for Kalendae.Input must be an <input> element or a valid element id.";
 
 	var self = this,
@@ -1004,6 +1006,13 @@ Kalendae.Input = function (targetElement, options) {
 
 	this._events.documentMousedown = util.addEvent(window.document, 'mousedown', function (event, target) {
 		noclose = false;
+	});
+
+	this._events.parentMouseDown = util.addEvent($inputParent, 'touchstart', function (event, target) {
+	    changing = true; // prevent setSelected from altering the input contents.
+	    self.setSelected(this.value);
+	    changing = false;
+	    self.show();
 	});
 
 	this._events.inputFocus = util.addEvent($input, 'focus', function () {
